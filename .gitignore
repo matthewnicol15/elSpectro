@@ -63,6 +63,7 @@ Thumbs.db
 ########
 *.root
 dataset*/
+scripts/outputs/
 
 # Old copies of files #
 #######################
