@@ -47,9 +47,9 @@ namespace elSpectro{
 
     double MaximumMassPossible() const  noexcept override {
 
-      Double_t maxMass=0;
+      Double_t maxMass=0.0;
       if(MassDistribution()!=nullptr){
-	maxMass=MassDistribution()->GetMaxX();
+        maxMass=MassDistribution()->GetMaxX();
       }
       else if(Pdg()!=-2211)
 	maxMass = Particle::MaximumMassPossible();
