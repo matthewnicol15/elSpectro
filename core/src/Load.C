@@ -20,13 +20,13 @@ void Load(){
     Fatal("elSpectro::Load","environment variable ELSPECTRO not set");
   }
   //if not defined jpacPhoto look for elSpectro submodule
-  if(JPAC.Length()==0) JPAC = ELSPECTRO+"jpacPhoto";
+  if(JPAC.Length()==0) JPAC = ELSPECTRO+"/jpacPhoto";
   
   gInterpreter->AddIncludePath(JPAC+"/include/");
   //First try libraries installed with source code
   auto jlib=gSystem->Load(JPAC+"/lib/libjpacPhoto."+gSystem->GetSoExt());
   //If not, check LD_LIBRARY_PATH
-  if(jlib!=0) jlib=gSystem->Load(TString("libjpacPhoto.")+gSystem->GetSoExt());
+  //if(jlib!=0) jlib=gSystem->Load(TString("libjpacPhoto.")+gSystem->GetSoExt());
   if(jlib!=0) Warning("elSpectro::Load","libjpacPhoto not found");
   
   gInterpreter->AddIncludePath(ELSPECTRO+"/core");
