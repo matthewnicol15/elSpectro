@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.9)
+cmake_minimum_required(VERSION 3.5)
 project(elSpectro)
 
 #if -DCMAKE_INSTALL_PREFIX=/install/here use that 
