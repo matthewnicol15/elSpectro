@@ -135,7 +135,7 @@ namespace elSpectro{
     //_prodInfo->_sWeight*=PhaseSpaceFactorToQ2eq0(W,p4tar.M() );
     
     //Q2 dependence of cross section
-     weight*=Q2H1Rho();
+    if(_useQ2Weight) weight*=Q2H1Rho();
      // std::cout<<" Q things "<<getQ2()<<"   "<<_prodInfo->_sWeight<<" "<<weight<<" "<<std::endl;
     return weight;
     

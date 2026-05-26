@@ -64,6 +64,7 @@ namespace elSpectro{
       if(val<_threshold) return;
       _threshold=val;
     }
+    void SetUseQ2Weight(bool use=true) noexcept { _useQ2Weight = use; }
     
     void FindExcitationSpectra();
     DistTH1* GetApproxWDist() const {return _Wrealphoto_Dist.get();}
@@ -105,6 +106,7 @@ namespace elSpectro{
 
     TH1D _hWPhaseSpace;
     std::unique_ptr<DistTH1> _Wrealphoto_Dist;
+    bool _useQ2Weight={true};
 
     ClassDefOverride(elSpectro::DecayModelQ2W,1); //class DecayModelQ2W
     
