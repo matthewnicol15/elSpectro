@@ -6,6 +6,37 @@
 
 
 namespace elSpectro{
+  bool DecayModelQ2W::_globalUseHighQ2Bias = false;
+  double DecayModelQ2W::_globalHighQ2BiasCenter = 1.8;
+  double DecayModelQ2W::_globalHighQ2BiasWidth = 0.45;
+  double DecayModelQ2W::_globalHighQ2BiasStrength = 2.5;
+  double DecayModelQ2W::_globalHighQ2BiasPower = 1.0;
+  double DecayModelQ2W::_globalHighQ2BiasLowFloor = 0.005;
+
+  double DecayModelQ2W::HighQ2BiasFactor() const noexcept{
+    if(!_globalUseHighQ2Bias) return 1.0;
+    double width = _globalHighQ2BiasWidth;
+    if(width<=0.0) width = 1E-6;
+    const double gate = 1.0/(1.0 + TMath::Exp(-(getQ2()-_globalHighQ2BiasCenter)/width));
+
+    // Thresholded turn-on: for large strengths this suppresses low Q2 strongly,
+    // then rises sharply near the knee instead of creating a two-hump shape.
+    double sharp = _globalHighQ2BiasStrength;
+    if(sharp<=0.0) sharp = 1.0;
+    double power = _globalHighQ2BiasPower;
+    if(power<=0.0) power = 1.0;
+    double lowFloor = _globalHighQ2BiasLowFloor;
+    if(lowFloor<0.0) lowFloor = 0.0;
+    if(lowFloor>1.0) lowFloor = 1.0;
+
+    const double turnOn = TMath::Power(gate, sharp*power);
+    double factor = lowFloor + (1.0-lowFloor)*turnOn;
+
+    if(factor>1.0) factor = 1.0;
+    if(factor<0.0) factor = 0.0;
+    return factor;
+  }
+
   //////////////////////////////////////////////////////
   ////Constructor for e- scattering kinematics only
   DecayModelQ2W::DecayModelQ2W( double thresh) :
@@ -136,6 +167,8 @@ namespace elSpectro{
     
     //Q2 dependence of cross section
     if(_useQ2Weight) weight*=Q2H1Rho();
+    weight*=HighQ2BiasFactor();
+    if(weight>1.0) weight=1.0;
      // std::cout<<" Q things "<<getQ2()<<"   "<<_prodInfo->_sWeight<<" "<<weight<<" "<<std::endl;
     return weight;
     

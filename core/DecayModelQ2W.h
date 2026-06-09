@@ -65,6 +65,17 @@ namespace elSpectro{
       _threshold=val;
     }
     void SetUseQ2Weight(bool use=true) noexcept { _useQ2Weight = use; }
+    static void SetGlobalUseHighQ2Bias(bool use=true) noexcept { _globalUseHighQ2Bias = use; }
+    static void SetGlobalHighQ2Bias(double center, double width, double strength) noexcept {
+      _globalHighQ2BiasCenter = center;
+      _globalHighQ2BiasWidth = width;
+      _globalHighQ2BiasStrength = strength;
+    }
+    static void SetGlobalHighQ2BiasShape(double power, double lowFloor=0.005) noexcept {
+      _globalHighQ2BiasPower = power;
+      _globalHighQ2BiasLowFloor = lowFloor;
+    }
+    double HighQ2BiasFactor() const noexcept;
     
     void FindExcitationSpectra();
     DistTH1* GetApproxWDist() const {return _Wrealphoto_Dist.get();}
@@ -107,6 +118,13 @@ namespace elSpectro{
     TH1D _hWPhaseSpace;
     std::unique_ptr<DistTH1> _Wrealphoto_Dist;
     bool _useQ2Weight={true};
+
+    static bool _globalUseHighQ2Bias;
+    static double _globalHighQ2BiasCenter;
+    static double _globalHighQ2BiasWidth;
+    static double _globalHighQ2BiasStrength;
+    static double _globalHighQ2BiasPower;
+    static double _globalHighQ2BiasLowFloor;
 
     ClassDefOverride(elSpectro::DecayModelQ2W,1); //class DecayModelQ2W
     
