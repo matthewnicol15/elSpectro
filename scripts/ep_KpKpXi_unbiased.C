@@ -107,7 +107,6 @@ void ep_KpKpXi_unbiased(double ebeamE, int nEvents, int fileno)
   auto Xi = hyperon2->Model()->Product(0);
   auto Pi0 = hyperon2->Model()->Product(1);
 
-
   auto electron = dynamic_cast<DecayModelQ2W *>(production->Model())->GetScatteredElectron();
 
   // ---------------------------------------------------------------------------
@@ -138,36 +137,8 @@ void ep_KpKpXi_unbiased(double ebeamE, int nEvents, int fileno)
     auto photon = *elbeam - electron->P4();
     double Q2 = -photon.M2();
 
-    // Keep only the requested Q2 phase space to match the comparison sample.
-    if (useQ2KinematicCut && (Q2 < Q2minCut || Q2 > Q2maxCut))
-    {
-      i--;
-      continue;
-    }
-
-    // Rejection-sample with a simple monotonic thresholded turn-on.
-    const double x = TMath::Max(0.0, (Q2 - Q2knee) / Q2scale);
-    double keepProb = Q2keepFloor + (1.0 - Q2keepFloor) * (1.0 - TMath::Exp(-TMath::Power(x, Q2power)));
-    keepProb = TMath::Max(0.0, TMath::Min(keepProb, 1.0));
-    if (useQ2ShapeRejection && gRandom->Uniform() > keepProb)
-    {
-      i--;
-      continue;
-    }
-
     double W = (photon + *prbeam).M();
     double t = -1.0 * (photon - Kp->P4()).M2();
-
-    if (useTShapeRejection)
-    {
-      double keepProbT = tKeepFloor + (1.0 - tKeepFloor) * TMath::Gaus(t, tShapeMean, tShapeSigma, false);
-      keepProbT = TMath::Max(0.0, TMath::Min(keepProbT, 1.0));
-      if (gRandom->Uniform() > keepProbT)
-      {
-        i--;
-        continue;
-      }
-    }
 
     if (percentage > 0 && i % percentage == 0)
       std::cout << "event number " << i << std::endl;
