@@ -21,18 +21,26 @@ void Load(){
   }
   //if not defined jpacPhoto look for elSpectro submodule
   if(JPAC.Length()==0) JPAC = ELSPECTRO+"/jpacPhoto";
+
+  // Make ROOT autoload aware of local build/install library locations.
+  gSystem->AddDynamicPath(ELSPECTRO+"/build/core");
+  gSystem->AddDynamicPath(ELSPECTRO+"/lib");
+  gSystem->AddDynamicPath(ELSPECTRO+"/build/jpacPhoto/src/core");
+  gSystem->AddDynamicPath(JPAC+"/lib");
   
   gInterpreter->AddIncludePath(JPAC+"/include/");
-  //First try libraries installed with source code
-  auto jlib=gSystem->Load(JPAC+"/lib/libjpacPhoto."+gSystem->GetSoExt());
-  //If not, check LD_LIBRARY_PATH
+  // Prefer in-tree build output when developing, then fall back to installed libs.
+  auto jlib=gSystem->Load(ELSPECTRO+"/build/jpacPhoto/src/core/libjpacPhoto."+gSystem->GetSoExt());
+  if(jlib!=0) jlib=gSystem->Load(JPAC+"/lib/libjpacPhoto."+gSystem->GetSoExt());
+  // If not, check LD_LIBRARY_PATH
   //if(jlib!=0) jlib=gSystem->Load(TString("libjpacPhoto.")+gSystem->GetSoExt());
   if(jlib!=0) Warning("elSpectro::Load","libjpacPhoto not found");
   
   gInterpreter->AddIncludePath(ELSPECTRO+"/core");
-  //First try libraries installed with source code
-  auto ellib=gSystem->Load(ELSPECTRO+"/lib/libelSpectro."+gSystem->GetSoExt());
-  //If not, check LD_LIBRARY_PATH
+  // Prefer in-tree build output when developing, then fall back to installed libs.
+  auto ellib=gSystem->Load(ELSPECTRO+"/build/core/libelSpectro."+gSystem->GetSoExt());
+  if(ellib!=0) ellib=gSystem->Load(ELSPECTRO+"/lib/libelSpectro."+gSystem->GetSoExt());
+  // If not, check LD_LIBRARY_PATH
   if(ellib!=0)ellib=gSystem->Load(TString("libelSpectro.")+gSystem->GetSoExt());
   if(ellib!=0) Fatal("elSpectro::Load","libelSpectro not found");
 
